@@ -1,0 +1,53 @@
+.income-form-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.income-form {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.income-form label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+
+.income-form input[type="text"],
+.income-form input[type="number"],
+.income-form input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.income-form textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+.income-form button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.income-form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
