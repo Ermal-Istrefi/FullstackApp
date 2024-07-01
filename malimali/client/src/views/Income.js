@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import api from '../api';
 import { Link, useNavigate } from "react-router-dom";
@@ -8,7 +9,11 @@ function Income() {
     const [incomes, setIncomes] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [deleteIncomeId, setDeleteIncomeId] = useState('');
-
+    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [sortField, setSortField] = useState('');
+    const [sortOrder, setSortOrder] = useState('asc');
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [filter, setFilter] = useState({
         name: '',
@@ -22,8 +27,9 @@ function Income() {
     const navigate = useNavigate();
 
     const getIncomes = async () => {
-        const response = await api.get('/incomes');
-        setIncomes(response.data);
+        const response = await api.get('/incomes', { params: { ...filter, page, limit, sortField, sortOrder } });
+        setIncomes(response.data.incomes);
+        setTotal(response.data.total);
     }
 
     useEffect(() => {
@@ -33,7 +39,7 @@ function Income() {
         }
 
         getIncomes();
-    }, []);
+    }, [page, limit, sortField, sortOrder]);
 
     const handleLogOut = async (event) => {
         localStorage.removeItem('token');
@@ -66,99 +72,129 @@ function Income() {
     }
 
     const applyFilter = async () => {
-        const response = await api.get('/incomes', { params: filter });
-        setIncomes(response.data);
+        setPage(1); 
+        getIncomes();
         setShowFilterModal(false);
     }
 
+    const handlePageChange = (newPage) => {
+        setPage(newPage);
+    }
+
+    const handleSortChange = (field) => {
+        const order = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
+        setSortField(field);
+        setSortOrder(order);
+    }
+
     return (
-        <div>
-            <h1>Incomes</h1>
+        <div className="income-container">
+            <h1 id="title">Incomes</h1>
             <Sidebar />
-            <div className='buttons' style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'flex-start', marginRight: '20px' }}>
-                <Link to='/income/add'>
-                    <button className='btn btn-primary' style={{ marginRight: '10px' }}>
-                        Add incomes
-                    </button>
-                </Link>
-                <button onClick={() => setShowFilterModal(true)} className='btn btn-secondary'>
-                    Filter
-                </button>
-                <button onClick={handleLogOut} className='btn btn-primary'>
-                    Log Out
-                </button>
+            <div className='income-header'>
+                <div className='income-buttons'>
+                    <Link to='/income/add'>
+                        <button className='btn-primary-custom'>
+                            Add Income
+                        </button>
+                    </Link>
+                        <button onClick={() => setShowFilterModal(true)} className='btn-secondary-custom'>
+                            Filter
+                        </button>
+                        <button onClick={handleLogOut} className='btn-primary-custom' id="logout">
+                            Log Out
+                        </button>
+                </div>
             </div>
 
-            <table className='table'>
-                <thead>
-                    <tr>
-                        <th>
-                            Category
-                        </th>
-                        <th>
-                            Amount
-                        </th>
-                        <th>
-                            Received
-                        </th>
-                        <th>
-                            Date
-                        </th>
-                        <th>
-                            Description
-                        </th>
-                        <th>
-                            Actions
-                        </th>
-                    </tr>
-                </thead>
 
-                <tbody>
-                    {incomes.map(income => (
-                        <tr key={income._id}>
-                            <td>
-                                {income.category}
-                            </td>
-                            <td>
-                                {income.amount}
-                            </td>
-                            <td>
-                                <input type="checkbox" checked={income.received} disabled='disabled' />
-                            </td>
-                            <td>
-                                {new Date(income.date).toLocaleDateString()}
-                            </td>
-                            <td>
-                                {income.description}
-                            </td>
-                            <td>
-                                <button onClick={() => handleEdit(income._id)} className="btn btn-primary mr-2">
-                                    Edit
-                                </button>
-                                <button onClick={() => confirmDelete(income._id)} className="btn btn-danger mr-2">
-                                    Delete
-                                </button>
-                            </td>
+            <div className='incomes-frame'>
+                <table className='incomes-table'>
+                    <thead>
+                        <tr>
+                            {/* Sortimi - Start */}
+                            <th onClick={() => handleSortChange('category')}>
+                                Category {sortField === 'category' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            </th>
+                            <th onClick={() => handleSortChange('amount')}>
+                                Amount {sortField === 'amount' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            </th>
+                            <th>
+                                Paid
+                            </th>
+                            <th onClick={() => handleSortChange('date')}>
+                                Date {sortField === 'date' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            </th>
+                            {/* Sortimi - End */}
+                            <th>
+                                Description
+                            </th>
+                            <th>
+                                Actions
+                            </th>
                         </tr>
-                    ))}
+                    </thead>
+
+                    <tbody>
+                    {
+                        incomes.map(income => (
+                            <tr key={income._id}>
+                                <td>
+                                    {income.category}
+                                </td>
+                                <td>
+                                    {income.amount}
+                                </td>
+                                <td>
+                                    <input type="checkbox" checked={income.received} disabled='disabled' />
+                                </td>
+                                <td>
+                                    {new Date(income.date).toLocaleDateString()}
+                                </td>
+                                <td>
+                                    {income.description}
+                                </td>
+                                <td>
+                                    <button onClick={() => handleEdit(income._id)} className="btn-icon">
+                                        <i className="fas fa-edit"></i>
+                                    </button>
+                                    <button onClick={() => confirmDelete(income._id)} className="btn-icon">
+                                        <i className="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        ))
+                    }
                 </tbody>
             </table>
+        </div>
 
-            { showModal ?
-   <div className='confirm-overlay'>
-      <div className='confirm-dialog'>
-        <p>Are you sure you want to delete expense</p>
-        <button onClick={deleteIncome}>Yes</button>
-        <button onClick={cancelDelete}>No</button>
-      </div>
-    </div> : ''
-  }
+        <div className='custom-pagination'>
+            {Array.from({ length: Math.ceil(total / limit) }, (_, i) => (
+                <button
+                    key={i}
+                    onClick={() => handlePageChange(i + 1)}
+                    className={page === i + 1 ? 'active' : ''}>
+                    {i + 1}
+                </button>
+                ))}
+        </div>
 
-{showFilterModal &&
-                <div className='filter-overlay'>
-                    <div className='filter-dialog'>
+            {showModal &&
+                <div className='confirm-overlay-custom'>
+                    <div className='confirm-dialog-custom'>
+                        <p>Are you sure you want to delete this income?</p>
+                        <button onClick={deleteIncome} id="yes">Yes</button>
+                        <button onClick={cancelDelete} id="no">No</button>
+                    </div>
+                </div>
+            }
+
+            {showFilterModal &&
+                <div className='filter-overlay-custom'>
+                    <div className='filter-dialog-custom'>
                         <h2>Filter Income</h2>
-                        <div className='filter-group'>
+                        <div className='filter-group-custom'>
                             <label>Category:</label>
                             <input
                                 type="text"
@@ -167,7 +203,7 @@ function Income() {
                                 onChange={handleFilterChange}
                             />
                         </div>
-                        <div className='filter-group'>
+                        <div className='filter-group-custom'>
                             <label>Amount:</label>
                             <input
                                 type="number"
@@ -185,11 +221,11 @@ function Income() {
                                 <option value="smaller">Smaller</option>
                             </select>
                         </div>
-                        <div className='filter-group'>
+                        <div className='filter-group-custom'>
                             <label>Received:</label>
                             <select
-                                name="paid"
-                                value={filter.paid}
+                                name="received"
+                                value={filter.received}
                                 onChange={handleFilterChange}
                             >
                                 <option value="">Any</option>
@@ -197,7 +233,7 @@ function Income() {
                                 <option value="false">False</option>
                             </select>
                         </div>
-                        <div className='filter-group'>
+                        <div className='filter-group-custom'>
                             <label>Date:</label>
                             <input
                                 type="date"
@@ -215,22 +251,15 @@ function Income() {
                                 <option value="smaller">Smaller</option>
                             </select>
                         </div>
-                        <div className='filter-buttons'>
+                        <div className='filter-buttons-custom'>
                             <button onClick={applyFilter}>Apply Filter</button>
                             <button onClick={() => setShowFilterModal(false)}>Cancel</button>
                         </div>
                     </div>
                 </div>
             }
-
-
-      {/* {expenses.map(expense => (
-        <p>
-           {expense.category}: {expense.amount} - {expense.description} on {new Date(expense.date).toLocaleDateString()} 
-        </p>
-      ))} */}
-    </div>
-  )}
-
+        </div>
+    );
+}
 
 export default Income;

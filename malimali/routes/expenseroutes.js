@@ -23,27 +23,29 @@ router.post('/', verifyToken, async (req, res) => {
     }
 });
 
+// Sorting expenses by amount, date, or category
 router.get('/', verifyToken, async (req, res) => {
     console.log('get expenses');
 
-    const { name, amount, amountCondition, paid, date, dateCondition, page = 1, limit = 10, sortField, sortOrder} = req.query;
+    const { name, amount, amountCondition, paid, date, dateCondition, page = 1, limit = 10, sortField, sortOrder } = req.query;
     let query = { user: req.user.id };
+
     if (name) {
         console.log(name);
-        query.category = { $regex: name, $options: 'i'}
+        query.category = { $regex: name, $options: 'i' };
     }
 
     if (amount) {
         const amountValue = parseFloat(amount);
         if (amountCondition === 'equal') {
             query.amount = amountValue;
-        }   else if (amountCondition === 'bigger') { 
-            query.amount = { $gt: amountValue};  
-        }   else if (amountCondition === 'smaller') {
-            query.amount = { $lt: amountValue};
-
+        } else if (amountCondition === 'bigger') {
+            query.amount = { $gt: amountValue };
+        } else if (amountCondition === 'smaller') {
+            query.amount = { $lt: amountValue };
         }
     }
+
     if (paid) {
         query.paid = paid === 'true';
     }
@@ -53,9 +55,9 @@ router.get('/', verifyToken, async (req, res) => {
         if (dateCondition === 'equal') {
             query.date = dateValue;
         } else if (dateCondition === 'bigger') {
-        query.date = { $gt: dateValue};
+            query.date = { $gt: dateValue };
         } else if (dateCondition === 'smaller') {
-        query.date = { $lt: dateValue};
+            query.date = { $lt: dateValue };
         }
     }
 
@@ -64,10 +66,12 @@ router.get('/', verifyToken, async (req, res) => {
         limit: parseInt(limit),
     };
 
+    // Sorting by amount, date, or category if specified
     if (sortField && sortOrder) {
-        options.sort = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
+        if (sortField === 'amount' || sortField === 'date' || sortField === 'category') {
+            options.sort = { [sortField]: sortOrder === 'asc' ? 1 : -1 };
+        }
     }
-
 
     try {
         const expenses = await Expense.find(query, null, options);

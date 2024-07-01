@@ -61,8 +61,8 @@ function AddEditExpense() {
     return (
         <>
             <div>
-                <Link to='/dashboard'>
-                    Go Back to dashboard
+                <Link to='/dashboard' className='dashboard-button'>
+                    Go Back to Dashboard
                 </Link>
                 <h1 className="loginForm">{id ? 'Edit Expense' : 'Add Expense'}</h1>  
                 <form className="my-form" onSubmit={onSubmit}>

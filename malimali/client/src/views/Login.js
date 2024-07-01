@@ -5,6 +5,7 @@ import axios from 'axios';
 import api from "../api";
 import {Link, useNavigate} from 'react-router-dom';
 
+
 import {
     Button,
     Card,
@@ -74,6 +75,8 @@ import {
 
     return (
       <>
+      <div className="d-flex align-items-center justify-content-center vh-100">
+      <Row className="justify-content-center align-items-center w-100">
         <Col lg="5" md="7">
           <Card className="bg-secondary shadow border-0">
             <CardHeader className="bg-transparent pb-5">
@@ -192,6 +195,8 @@ import {
             </Col>
           </Row>
         </Col>
+        </Row>
+        </div>
       </>
     );
   };

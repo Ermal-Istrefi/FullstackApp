@@ -1,3 +1,37 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f6f8;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.dashboard-container {
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.dashboard-buttons {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+    margin-right: 50px;
+    
+}
+
 .confirm-overlay {
     position: fixed;
     top: 0;
@@ -21,6 +55,28 @@
 
 .confirm-dialog button {
     margin: 5px;
+    padding: 10px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: white;
+}
+
+#yes{
+    background-color: #4CAF50;
+}
+
+#no{
+    background-color: #FF0000;
+}
+
+#yes:hover{
+    background-color: #2b612c;
+}
+
+#no:hover{
+    background-color: #8b0a0a;
 }
 
 .filter-overlay {
@@ -42,12 +98,14 @@
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     text-align: left;
-    width: 300px;
+    width: 350px;
 }
 
 .filter-dialog h2 {
     margin-bottom: 20px;
     text-align: center;
+    font-size: 1.5rem;
+    color: #333;
 }
 
 .filter-group {
@@ -58,6 +116,7 @@
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: #555;
 }
 
 .filter-group input,
@@ -74,26 +133,32 @@
     justify-content: space-between;
 }
 
-.filter-buttons button {
-    padding: 8px 16px;
+.filter-buttons .btn-primary {
+    padding: 10px 20px;
     border: none;
-    border-radius: 4px;
-    background-color: #007bff;
+    border-radius: 5px;
+    background-color: #008106;
     color: white;
     cursor: pointer;
     font-size: 14px;
 }
 
-.filter-buttons button:hover {
-    background-color: #0056b3;
+.filter-buttons .btn-primary:hover {
+    background-color: #094704;
 }
 
-.filter-buttons button:last-child {
+.filter-buttons .btn-secondary {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
     background-color: #6c757d;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
 }
 
-.filter-buttons button:last-child:hover {
-    background-color: #5a6268;
+.filter-buttons .btn-secondary:hover {
+    background-color: #43484d;
 }
 
 .pagination {
@@ -115,9 +180,93 @@
 
 .pagination button:hover {
     background-color: #0056b3;
+    border-radius: 100px;
+    transition: 2s ease;
 }
 
 .pagination button.active {
     background-color: #0056b3;
     cursor: default;
+}
+
+.dashboard-buttons .btn-primary-custom, .btn-secondary-custom {
+    border-radius: 20px;
+    padding: 8px 16px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-primary-custom {
+    background-color: #23880a;
+    color: white;
+    font-weight: bolder;
+}
+
+#logout{
+    background-color: #ff0101;
+}
+
+#logout:hover{
+    background-color: #830202;
+}
+.btn-primary-custom:hover {
+    background-color: #195e04;
+}
+
+.btn-secondary-custom {
+    background-color: #e76108;
+    color: white;
+    font-weight: bolder;
+}
+
+.btn-secondary-custom:hover {
+    background-color: #742f07;
+}   
+
+.expenses-frame {
+    margin-left: 50px;
+    margin-right: 50px;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.6);
+    background: #fff;
+    margin-bottom: 20px;
+}
+
+.expenses-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.expenses-table th, .expenses-table td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+
+.expenses-table th {
+    background-color: #e7e2e2;
+    cursor: pointer;
+}
+
+.expenses-table th:hover {
+    background-color: #868686;
+    color: white;
+}
+
+.btn-icon {
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.btn-icon .fas {
+    color: #e20000;
+}
+
+.btn-icon .fas:hover {
+    color: #690808;
 }

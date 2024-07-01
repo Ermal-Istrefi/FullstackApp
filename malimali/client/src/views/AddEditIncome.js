@@ -60,7 +60,7 @@ function AddEditIncome() {
     return (
         <>
             <div>
-                <Link to='/income'>
+                <Link to='/income' className='income-button'>
                     Go Back to Income
                 </Link>
                 <h1 className="loginForm">{id ? 'Edit Income' : 'Add Income'}</h1>
