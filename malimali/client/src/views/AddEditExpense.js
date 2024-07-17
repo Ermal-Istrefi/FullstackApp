@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import api from "../api";
 import "./AddEditExpense.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -10,22 +10,26 @@ function AddEditExpense() {
         description: '',
         date: '',
         paid: false,
+        recurring: false,
+        recurrenceInterval: ''
     });
 
     const navigate = useNavigate();
     const { id } = useParams();
 
     useEffect(() => {
-        if(id) {
+        if (id) {
             const fetchExpense = async () => {
                 try {
-                    const response = await api.get('/expenses/' + id);  
+                    const response = await api.get('/expenses/' + id);
                     setFormData({
                         category: response.data.category,
                         amount: response.data.amount,
                         description: response.data.description,
                         date: response.data.date.split('T')[0],
-                        paid: response.data.paid
+                        paid: response.data.paid,
+                        recurring: response.data.recurring || false,
+                        recurrenceInterval: response.data.recurrenceInterval || ''
                     });
                 } catch (error) {
                     console.error('Error fetching the expense:', error);
@@ -33,23 +37,23 @@ function AddEditExpense() {
             };
             fetchExpense();
         }
-    }, [id]);  // Added 'id' as dependency for useEffect to avoid unnecessary re-renders
+    }, [id]);
 
     const onChange = e => {
-        const {name, value, type, checked} = e.target;
-        setFormData({ ...formData, [name]: type === 'checkbox' ? checked: value });
+        const { name, value, type, checked } = e.target;
+        setFormData({ ...formData, [name]: type === 'checkbox' ? checked : value });
     };
 
     const onSubmit = async e => {
         e.preventDefault();
         try {
-            if(id) {
-                await api.put('/expenses/' + id, formData);  // Added formData to the PUT request
+            if (id) {
+                await api.put('/expenses/' + id, formData);
                 alert('Expense modified');
                 navigate('/dashboard');
             } else {
-                await api.post('/expenses', formData);  // Await for the POST request
-                alert('Expense added');  // Added alert for successful addition
+                await api.post('/expenses', formData);
+                alert('Expense added');
                 navigate('/dashboard');
             }
         } catch (error) {
@@ -64,7 +68,7 @@ function AddEditExpense() {
                 <Link to='/dashboard' className='dashboard-button'>
                     Go Back to Dashboard
                 </Link>
-                <h1 className="loginForm">{id ? 'Edit Expense' : 'Add Expense'}</h1>  
+                <h1 className="loginForm">{id ? 'Edit Expense' : 'Add Expense'}</h1>
                 <form className="my-form" onSubmit={onSubmit}>
                     <label>
                         <input onChange={onChange} value={formData.category} type="text" placeholder="Category" name="category" required />
@@ -79,13 +83,29 @@ function AddEditExpense() {
                         <input onChange={onChange} value={formData.date} type="date" placeholder="Date" name="date" required />
                     </label>
                     <label>
-                        <input type="checkbox" checked={formData.paid} name="paid" onChange={onChange}/>
+                        <input type="checkbox" checked={formData.paid} name="paid" onChange={onChange} />
                         Paid
                     </label>
                     <label>
-                        <button type="submit">{id ? 'Edit Expense' : 'Add Expense'}</button>  
+                        <input type="checkbox" checked={formData.recurring} name="recurring" onChange={onChange} />
+                        Recurring
                     </label>
-                </form> 
+                    {formData.recurring && (
+                        <label>
+                            Recurrence Interval:
+                            <select name="recurrenceInterval" value={formData.recurrenceInterval} onChange={onChange}>
+                                <option value="">Select Interval</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </label>
+                    )}
+                    <label>
+                        <button type="submit">{id ? 'Edit Expense' : 'Add Expense'}</button>
+                    </label>
+                </form>
             </div>
         </>
     );

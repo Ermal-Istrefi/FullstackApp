@@ -4,9 +4,8 @@ const verifyToken = require('../verifyToken');
 const router = express.Router();
 
 router.post('/', verifyToken, async (req, res) => {
-    console.log('post expense');
+    const { category, amount, description, date, paid, recurring, recurrenceInterval } = req.body; 
 
-    const { category, amount, description, date, paid } = req.body; 
     try {
         const newExpense = new Expense({
             user: req.user.id,
@@ -14,7 +13,10 @@ router.post('/', verifyToken, async (req, res) => {
             amount,
             description,
             date, 
-            paid
+            paid,
+            recurring,
+            recurrenceInterval,
+            nextOccurrence: recurring ? calculateNextOccurrence(date, recurrenceInterval) : null
         });
         await newExpense.save();
         res.status(201).json(newExpense);

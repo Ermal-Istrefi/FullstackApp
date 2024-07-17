@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import api from '../api';
 import { Link, useNavigate } from "react-router-dom";
@@ -23,6 +22,8 @@ function Income() {
         date: '',
         dateCondition: 'equal'
     });
+    const [recurring, setRecurring] = useState(false);
+    const [recurrenceInterval, setRecurrenceInterval] = useState('');
 
     const navigate = useNavigate();
 
@@ -98,21 +99,19 @@ function Income() {
                             Add Income
                         </button>
                     </Link>
-                        <button onClick={() => setShowFilterModal(true)} className='btn-secondary-custom'>
-                            Filter
-                        </button>
-                        <button onClick={handleLogOut} className='btn-primary-custom' id="logout">
-                            Log Out
-                        </button>
+                    <button onClick={() => setShowFilterModal(true)} className='btn-secondary-custom'>
+                        Filter
+                    </button>
+                    <button onClick={handleLogOut} className='btn-primary-custom' id="logout">
+                        Log Out
+                    </button>
                 </div>
             </div>
-
 
             <div className='incomes-frame'>
                 <table className='incomes-table'>
                     <thead>
                         <tr>
-                            {/* Sortimi - Start */}
                             <th onClick={() => handleSortChange('category')}>
                                 Category {sortField === 'category' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
                             </th>
@@ -125,7 +124,6 @@ function Income() {
                             <th onClick={() => handleSortChange('date')}>
                                 Date {sortField === 'date' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
                             </th>
-                            {/* Sortimi - End */}
                             <th>
                                 Description
                             </th>
@@ -136,49 +134,49 @@ function Income() {
                     </thead>
 
                     <tbody>
-                    {
-                        incomes.map(income => (
-                            <tr key={income._id}>
-                                <td>
-                                    {income.category}
-                                </td>
-                                <td>
-                                    {income.amount}
-                                </td>
-                                <td>
-                                    <input type="checkbox" checked={income.received} disabled='disabled' />
-                                </td>
-                                <td>
-                                    {new Date(income.date).toLocaleDateString()}
-                                </td>
-                                <td>
-                                    {income.description}
-                                </td>
-                                <td>
-                                    <button onClick={() => handleEdit(income._id)} className="btn-icon">
-                                        <i className="fas fa-edit"></i>
-                                    </button>
-                                    <button onClick={() => confirmDelete(income._id)} className="btn-icon">
-                                        <i className="fas fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
-                        ))
-                    }
-                </tbody>
-            </table>
-        </div>
+                        {
+                            incomes.map(income => (
+                                <tr key={income._id}>
+                                    <td>
+                                        {income.category}
+                                    </td>
+                                    <td>
+                                        {income.amount}
+                                    </td>
+                                    <td>
+                                        <input type="checkbox" checked={income.received} disabled='disabled' />
+                                    </td>
+                                    <td>
+                                        {new Date(income.date).toLocaleDateString()}
+                                    </td>
+                                    <td>
+                                        {income.description}
+                                    </td>
+                                    <td>
+                                        <button onClick={() => handleEdit(income._id)} className="btn-icon">
+                                            <i className="fas fa-edit"></i>
+                                        </button>
+                                        <button onClick={() => confirmDelete(income._id)} className="btn-icon">
+                                            <i className="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
+            </div>
 
-        <div className='custom-pagination'>
-            {Array.from({ length: Math.ceil(total / limit) }, (_, i) => (
-                <button
-                    key={i}
-                    onClick={() => handlePageChange(i + 1)}
-                    className={page === i + 1 ? 'active' : ''}>
-                    {i + 1}
-                </button>
+            <div className='custom-pagination'>
+                {Array.from({ length: Math.ceil(total / limit) }, (_, i) => (
+                    <button
+                        key={i}
+                        onClick={() => handlePageChange(i + 1)}
+                        className={page === i + 1 ? 'active' : ''}>
+                        {i + 1}
+                    </button>
                 ))}
-        </div>
+            </div>
 
             {showModal &&
                 <div className='confirm-overlay-custom'>
@@ -251,6 +249,30 @@ function Income() {
                                 <option value="smaller">Smaller</option>
                             </select>
                         </div>
+                        <div className='filter-group-custom'>
+                            <label>Recurring:</label>
+                            <input
+                                type="checkbox"
+                                name="recurring"
+                                checked={recurring}
+                                onChange={(e) => setRecurring(e.target.checked)}
+                            />
+                        </div>
+                        {recurring && (
+                            <div className='filter-group-custom'>
+                                <label>Recurrence Interval:</label>
+                                <select
+                                    name="recurrenceInterval"
+                                    value={recurrenceInterval}
+                                    onChange={(e) => setRecurrenceInterval(e.target.value)}
+                                >
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                    <option value="yearly">Yearly</option>
+                                </select>
+                            </div>
+                        )}
                         <div className='filter-buttons-custom'>
                             <button onClick={applyFilter}>Apply Filter</button>
                             <button onClick={() => setShowFilterModal(false)}>Cancel</button>

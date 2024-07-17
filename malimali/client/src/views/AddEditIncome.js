@@ -10,6 +10,8 @@ function AddEditIncome() {
         description: '',
         date: '',
         received: false,
+        recurring: false,
+        recurrenceInterval: ''
     });
 
     const navigate = useNavigate();
@@ -25,7 +27,9 @@ function AddEditIncome() {
                         amount: response.data.amount,
                         description: response.data.description,
                         date: response.data.date.split('T')[0],
-                        received: response.data.received
+                        received: response.data.received,
+                        recurring: response.data.recurring || false,
+                        recurrenceInterval: response.data.recurrenceInterval || ''
                     });
                 } catch (error) {
                     console.error('Error fetching the income:', error);
@@ -50,7 +54,7 @@ function AddEditIncome() {
                 await api.post('/incomes', formData);
                 alert('Income added');
             }
-            navigate('/Income'); 
+            navigate('/income');
         } catch (error) {
             console.error('Income save error', error);
             alert('Error saving income');
@@ -81,6 +85,22 @@ function AddEditIncome() {
                         <input type="checkbox" checked={formData.received} name="received" onChange={onChange} />
                         Received
                     </label>
+                    <label>
+                        <input type="checkbox" checked={formData.recurring} name="recurring" onChange={onChange} />
+                        Recurring
+                    </label>
+                    {formData.recurring && (
+                        <label>
+                            Recurrence Interval:
+                            <select name="recurrenceInterval" value={formData.recurrenceInterval} onChange={onChange}>
+                                <option value="">Select Interval</option>
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
+                        </label>
+                    )}
                     <label>
                         <button type="submit">{id ? 'Edit Income' : 'Add Income'}</button>
                     </label>

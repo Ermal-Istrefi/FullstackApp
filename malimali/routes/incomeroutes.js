@@ -5,9 +5,8 @@ const router = express.Router();
 
 // Add a new income
 router.post('/', verifyToken, async (req, res) => {
-    console.log('post income');
+    const { category, amount, description, date, received, recurring, recurrenceInterval } = req.body; 
 
-    const { category, amount, description, date, received } = req.body; 
     try {
         const newIncome = new Income({
             user: req.user.id,
@@ -15,7 +14,10 @@ router.post('/', verifyToken, async (req, res) => {
             amount,
             description,
             date, 
-            received
+            received,
+            recurring,
+            recurrenceInterval,
+            nextOccurrence: recurring ? calculateNextOccurrence(date, recurrenceInterval) : null
         });
         await newIncome.save();
         res.status(201).json(newIncome);

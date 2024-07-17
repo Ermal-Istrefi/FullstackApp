@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import './Dashboard.css';
 import Sidebar from "./Sidebar";
 
-
 function Dashboard() {
     const [expenses, setExpenses] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -14,8 +13,6 @@ function Dashboard() {
     const [limit, setLimit] = useState(10);
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
-    const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 }); // Default map center
-    const [mapZoom, setMapZoom] = useState(10); // Default map zoom level
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [filter, setFilter] = useState({
       name: '',
@@ -23,14 +20,15 @@ function Dashboard() {
       amountCondition: 'equal',
       paid: '',
       date: '',
-      dateCondition: 'equal'
+      dateCondition: 'equal',
+      recurrenceInterval: 'monthly' // Added recurrenceInterval filter
     });
 
     const navigate = useNavigate();
 
-    const getExpenses = async() => {
+    const getExpenses = async () => {
         try {
-            const response = await api.get('/expenses', { params: {...filter, page, limit, sortField, sortOrder}}); // Added pagination, sorting, and filtering
+            const response = await api.get('/expenses', { params: { ...filter, page, limit, sortField, sortOrder } });
             console.log(response.data);
             const data = response.data.expenses;
             setExpenses(Array.isArray(data) ? data : []);
@@ -39,7 +37,7 @@ function Dashboard() {
             console.error('Error fetching expenses:', error);
             setExpenses([]);
         }
-    }
+    };
 
     useEffect(() => {
         if (!localStorage.getItem('token')) {
@@ -47,54 +45,54 @@ function Dashboard() {
           return;
         }
         getExpenses();
-    }, [page, limit, sortField, sortOrder]); // Added dependencies for useEffect
+    }, [page, limit, sortField, sortOrder, filter]); // Added filter dependency
 
     const handleLogOut = () => {
       localStorage.removeItem('token');
       navigate('/');
-    }
+    };
 
     const cancelDelete = () => {
       setShowModal(false);
-    }
+    };
 
     const deleteExpense = async () => {
       await api.delete('/expenses/' + deleteExpenseId);
       setShowModal(false);
       getExpenses();
       alert('Expense Deleted');
-    }
+    };
 
     const confirmDelete = (expenseId) => {
       setShowModal(true);
       setDeleteExpenseId(expenseId);
-    }
+    };
 
     const handleEdit = (expenseId) => {
       navigate('/expense/edit/' + expenseId);
-    }
+    };
 
     const handleFilterChange = (e) => {
       const { name, value } = e.target;
       setFilter({ ...filter, [name]: value });
-    }
+    };
 
     const handleSortChange = (field) => {
       const order = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
       setSortField(field);
       setSortOrder(order);
-    }
+    };
 
-    const applyFilter = async() => {
+    const applyFilter = async () => {
       setPage(1);
       const response = await api.get('/expenses', { params: filter });
       setExpenses(Array.isArray(response.data.expenses) ? response.data.expenses : []);
       setShowFilterModal(false);
-    }
+    };
 
     const handlePageChange = (newPage) => {
       setPage(newPage);
-    }
+    };
 
   return (
     <div className="dashboard-container">
@@ -136,6 +134,12 @@ function Dashboard() {
                 Description
               </th>
               <th>
+                Recurring
+              </th>
+              <th>
+                Recurrence Interval
+              </th>
+              <th>
                 Actions
               </th>
             </tr>
@@ -158,6 +162,12 @@ function Dashboard() {
                 </td>
                 <td>
                   {expense.description}
+                </td>
+                <td>
+                  <input type="checkbox" checked={expense.recurring} disabled='disabled' />
+                </td>
+                <td>
+                  {expense.recurrenceInterval}
                 </td>
                 <td>
                    <button onClick={() => handleEdit(expense._id)} className="btn-icon">
@@ -255,6 +265,32 @@ function Dashboard() {
                 <option value="equal">Equal</option>
                 <option value="bigger">Bigger</option>
                 <option value="smaller">Smaller</option>
+              </select>
+            </div>
+            <div className='filter-group'>
+              <label>Recurring:</label>
+              <select
+                name="recurring"
+                value={filter.recurring}
+                onChange={handleFilterChange}
+              >
+                <option value="">Any</option>
+                <option value="true">True</option>
+                <option value="false">False</option>
+              </select>
+            </div>
+            <div className='filter-group'>
+              <label>Recurrence Interval:</label>
+              <select
+                name="recurrenceInterval"
+                value={filter.recurrenceInterval}
+                onChange={handleFilterChange}
+              >
+                <option value="">Any</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
+                <option value="monthly">Monthly</option>
+                <option value="yearly">Yearly</option>
               </select>
             </div>
             <div className='filter-buttons'>

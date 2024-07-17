@@ -29,7 +29,6 @@ h1 {
     gap: 10px;
     margin-left: auto;
     margin-right: 50px;
-    
 }
 
 .confirm-overlay {
@@ -63,19 +62,19 @@ h1 {
     color: white;
 }
 
-#yes{
+#yes {
     background-color: #4CAF50;
 }
 
-#no{
+#no {
     background-color: #FF0000;
 }
 
-#yes:hover{
+#yes:hover {
     background-color: #2b612c;
 }
 
-#no:hover{
+#no:hover {
     background-color: #8b0a0a;
 }
 
@@ -203,13 +202,14 @@ h1 {
     font-weight: bolder;
 }
 
-#logout{
+#logout {
     background-color: #ff0101;
 }
 
-#logout:hover{
+#logout:hover {
     background-color: #830202;
 }
+
 .btn-primary-custom:hover {
     background-color: #195e04;
 }
@@ -222,7 +222,7 @@ h1 {
 
 .btn-secondary-custom:hover {
     background-color: #742f07;
-}   
+}
 
 .expenses-frame {
     margin-left: 50px;
@@ -270,3 +270,15 @@ h1 {
 .btn-icon .fas:hover {
     color: #690808;
 }
+
+.filter-group .filter-checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px;
+}
+
+.filter-group .filter-checkbox input {
+    margin-left: 10px;
+}
+
