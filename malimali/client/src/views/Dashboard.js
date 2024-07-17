@@ -4,6 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import './Dashboard.css';
 import Sidebar from "./Sidebar";
 
+
 function Dashboard() {
     const [expenses, setExpenses] = useState([]);
     const [showModal, setShowModal] = useState(false);
@@ -13,6 +14,8 @@ function Dashboard() {
     const [limit, setLimit] = useState(10);
     const [sortField, setSortField] = useState('');
     const [sortOrder, setSortOrder] = useState('asc');
+    const [mapCenter, setMapCenter] = useState({ lat: 0, lng: 0 }); // Default map center
+    const [mapZoom, setMapZoom] = useState(10); // Default map zoom level
     const [showFilterModal, setShowFilterModal] = useState(false);
     const [filter, setFilter] = useState({
       name: '',
@@ -27,7 +30,7 @@ function Dashboard() {
 
     const getExpenses = async() => {
         try {
-            const response = await api.get('/expenses', { params: {...filter, page, limit, sortField, sortOrder}}); // Shtimi i page, limit, sortField dhe SortOrder
+            const response = await api.get('/expenses', { params: {...filter, page, limit, sortField, sortOrder}}); // Added pagination, sorting, and filtering
             console.log(response.data);
             const data = response.data.expenses;
             setExpenses(Array.isArray(data) ? data : []);
@@ -44,7 +47,7 @@ function Dashboard() {
           return;
         }
         getExpenses();
-    }, [page, limit, sortField, sortOrder]); // Shtimi i page, limit, sortField dhe SortOrder
+    }, [page, limit, sortField, sortOrder]); // Added dependencies for useEffect
 
     const handleLogOut = () => {
       localStorage.removeItem('token');
@@ -75,7 +78,7 @@ function Dashboard() {
       const { name, value } = e.target;
       setFilter({ ...filter, [name]: value });
     }
-    // Sortimi
+
     const handleSortChange = (field) => {
       const order = sortField === field && sortOrder === 'asc' ? 'desc' : 'asc';
       setSortField(field);
@@ -88,7 +91,7 @@ function Dashboard() {
       setExpenses(Array.isArray(response.data.expenses) ? response.data.expenses : []);
       setShowFilterModal(false);
     }
-    // Pagination
+
     const handlePageChange = (newPage) => {
       setPage(newPage);
     }
@@ -117,7 +120,6 @@ function Dashboard() {
         <table className='expenses-table'>
           <thead>
             <tr>
-              {/* Sortimi - Start */}
               <th onClick={() => handleSortChange('category')}>
                 Category {sortField === 'category' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
               </th>
@@ -130,7 +132,6 @@ function Dashboard() {
               <th onClick={() => handleSortChange('date')}>
                 Date {sortField === 'date' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
               </th>
-              {/* Sortimi - End */}
               <th>
                 Description
               </th>
@@ -173,7 +174,6 @@ function Dashboard() {
         </table>
       </div>
 
-      {/* pagination */}
       <div className='pagination'>
         {Array.from({ length: Math.ceil(total / limit) }, (_, i) => (
           <button
@@ -185,7 +185,6 @@ function Dashboard() {
           </button>
         ))}
       </div>
-      {/* pagination */}
 
       { showModal && (
         <div className='confirm-overlay'>

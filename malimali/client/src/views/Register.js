@@ -1,103 +1,61 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
-
-
-
 import {
-    Button,
-    Card,
-    CardHeader,
-    CardBody,
-    FormGroup,
-    Form,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    Row,
-    Col,
-  } from "reactstrap";
-  import axios from "axios";
-  
-  const Register = () => {
-    const [name,setName] = useState('');
-    const [email,setEmail] = useState('');
-  const [password,setPassword] = useState('');
+  Button,
+  Card,
+  CardHeader,
+  CardBody,
+  FormGroup,
+  Form,
+  Input,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroup,
+  Row,
+  Col,
+} from "reactstrap";
+import axios from "axios";
 
-  const handleNameChange = (event) => setName(event.target.value)
+const Register = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleNameChange = (event) => setName(event.target.value);
   const handleEmailChange = (event) => setEmail(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
 
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('test');
-    console.log(name,email, password);
-  
-  try {
-    const response = await axios.post("http://localhost:5001/api/register", {
-      name,
-      email,
-      password,
-    });
-    console.log(response);
-  } catch (error) {
-    console.error("Register error", error.response.data);
-  }
-}
+    try {
+      const response = await axios.post("http://localhost:5001/api/register", {
+        name,
+        email,
+        password,
+      });
+      console.log(response);
+    } catch (error) {
+      console.error("Register error", error.response.data);
+    }
+  };
 
+  const cardStyle = {
+    maxWidth: '400px',
+    margin: 'auto',
+  };
 
-    return (
-      <>
-      <div className="d-flex align-items-center justify-content-center vh-100">
-      <Row className="justify-content-center align-items-center w-100">
-        <Col lg="6" md="8">
-          <Card className="bg-secondary shadow border-0">
+  return (
+    <div className="d-flex align-items-center justify-content-center vh-100">
+      <Row className="justify-content-center w-100">
+        <Col lg="5" md="7">
+          <Card className="bg-secondary shadow border-0" style={cardStyle}>
             <CardHeader className="bg-transparent pb-5">
-              <div className="text-muted text-center mt-2 mb-4">
-                <small>Sign up with</small>
-              </div>
-              <div className="text-center">
-                <Button
-                  className="btn-neutral btn-icon mr-4"
-                  color="default"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={
-                        require("../assets/img/icons/common/github.svg")
-                          .default
-                      }
-                    />
-                  </span>
-                  <span className="btn-inner--text">Github</span>
-                </Button>
-                <Button
-                  className="btn-neutral btn-icon"
-                  color="default"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={
-                        require("../assets/img/icons/common/google.svg")
-                          .default
-                      }
-                    />
-                  </span>
-                  <span className="btn-inner--text">Google</span>
-                </Button>
+              <div className="text-center mt-2 mb-4">
+                <h3>Create an Account</h3>
               </div>
             </CardHeader>
             <CardBody className="px-lg-5 py-lg-5">
-              <div className="text-center text-muted mb-4">
-                <small>Or sign up with credentials</small>
-              </div>
-              <Form role="form">
+              <Form role="form" onSubmit={handleSubmit}>
                 <FormGroup>
                   <InputGroup className="input-group-alternative mb-3">
                     <InputGroupAddon addonType="prepend">
@@ -105,9 +63,11 @@ import {
                         <i className="ni ni-hat-3" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Name" type="text"  
-                    value={name}
-                    onChange={handleNameChange}
+                    <Input
+                      placeholder="Name"
+                      type="text"
+                      value={name}
+                      onChange={handleNameChange}
                     />
                   </InputGroup>
                 </FormGroup>
@@ -143,12 +103,6 @@ import {
                     />
                   </InputGroup>
                 </FormGroup>
-                <div className="text-muted font-italic">
-                  <small>
-                    password strength:{" "}
-                    <span className="text-success font-weight-700">strong</span>
-                  </small>
-                </div>
                 <Row className="my-4">
                   <Col xs="12">
                     <div className="custom-control custom-control-alternative custom-checkbox">
@@ -172,11 +126,11 @@ import {
                   </Col>
                 </Row>
                 <div className="text-center">
-                  <Button className="mt-4" color="primary" type="submit" onClick={handleSubmit}>
+                  <Button className="mt-4" color="primary" type="submit">
                     Create account
                   </Button>
                 </div>
-                <div className="text-center">
+                <div className="text-center mt-3">
                   <Link to="/">
                     Already have an account? Log in
                   </Link>
@@ -185,11 +139,9 @@ import {
             </CardBody>
           </Card>
         </Col>
-        </Row>
-        </div>
-      </>
-    );
-  };
-  
-  export default Register;
-  
+      </Row>
+    </div>
+  );
+};
+
+export default Register;

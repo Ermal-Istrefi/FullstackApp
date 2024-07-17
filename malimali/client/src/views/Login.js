@@ -1,130 +1,70 @@
-
-
-import React, {useState, useEffect  } from "react";
+import React, { useState, useEffect } from "react";
 import axios from 'axios';
-import api from "../api";
-import {Link, useNavigate} from 'react-router-dom';
-
-
+import { Link, useNavigate } from 'react-router-dom';
 import {
-    Button,
-    Card,
-    CardHeader,
-    CardBody,
-    FormGroup,
-    Form,
-    Input,
-    InputGroupAddon,
-    InputGroupText,
-    InputGroup,
-    Row,
-    Col,
-  } from "reactstrap";
- 
-  
+  Button,
+  Card,
+  CardHeader,
+  CardBody,
+  FormGroup,
+  Form,
+  Input,
+  InputGroupAddon,
+  InputGroupText,
+  InputGroup,
+  Row,
+  Col,
+} from "reactstrap";
 
-
-  const Login = () => {
-    const [email,setEmail] = useState('');
-    const [password,setPassword] = useState('');
-    const [token, setToken] = useState('');
-    const navigate = useNavigate();
+const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const checkLogin = async () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-          navigate('/dashboard');
-        }
-    }
+      const token = localStorage.getItem('token');
+      if (token) {
+        navigate('/dashboard');
+      }
+    };
     checkLogin();
-}, []);
+  }, [navigate]);
 
   const handleEmailChange = (event) => setEmail(event.target.value);
   const handlePasswordChange = (event) => setPassword(event.target.value);
 
-
-  const handleSubmit = async(event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log('test');
-    console.log(email, password);
-
     try {
-      const response = await axios.post("http://localhost:5001/api/login"
-      ,{ 
+      const response = await axios.post("http://localhost:5001/api/login", {
         email,
         password,
-      }
-      );
-     
+      });
       localStorage.setItem('token', response.data);
-      
-
-      console.log(response.data);
-
-      setToken(response.data);
       navigate('/dashboard');
-      
-      
     } catch (error) {
-      console.error("Register error", error.response.data);
+      console.error("Login error", error.response.data);
     }
-  }
+  };
 
+  const cardStyle = {
+    maxWidth: '400px',
+    margin: 'auto',
+  };
 
-
-    return (
-      <>
-      <div className="d-flex align-items-center justify-content-center vh-100">
-      <Row className="justify-content-center align-items-center w-100">
+  return (
+    <div className="d-flex align-items-center justify-content-center vh-100">
+      <Row className="justify-content-center w-100">
         <Col lg="5" md="7">
-          <Card className="bg-secondary shadow border-0">
+          <Card className="bg-secondary shadow border-0" style={cardStyle}>
             <CardHeader className="bg-transparent pb-5">
-              <div className="text-muted text-center mt-2 mb-3">
-                <small>Sign in with</small>
-              </div>
-              <div className="btn-wrapper text-center">
-                <Button
-                  className="btn-neutral btn-icon"
-                  color="default"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={
-                        require("../assets/img/icons/common/github.svg")
-                          .default
-                      }
-                    />
-                  </span>
-                  <span className="btn-inner--text">Github</span>
-                </Button>
-                <Button
-                  className="btn-neutral btn-icon"
-                  color="default"
-                  href="#pablo"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <span className="btn-inner--icon">
-                    <img
-                      alt="..."
-                      src={
-                        require("../assets/img/icons/common/google.svg")
-                          .default
-                      }
-                    />
-                  </span>
-                  <span className="btn-inner--text">Google</span>
-                </Button>
+              <div className="text-center mt-2 mb-4">
+                <h3>Sign In</h3>
               </div>
             </CardHeader>
             <CardBody className="px-lg-5 py-lg-5">
-              <div className="text-center text-muted mb-4">
-                <small>Or sign in with credentials</small>
-              </div>
-              <Form role="form">
+              <Form role="form" onSubmit={handleSubmit}>
                 <FormGroup className="mb-3">
                   <InputGroup className="input-group-alternative">
                     <InputGroupAddon addonType="prepend">
@@ -152,7 +92,7 @@ import {
                       placeholder="Password"
                       type="password"
                       autoComplete="new-password"
-                      value = {password}
+                      value={password}
                       onChange={handlePasswordChange}
                     />
                   </InputGroup>
@@ -160,25 +100,23 @@ import {
                 <div className="custom-control custom-control-alternative custom-checkbox">
                   <input
                     className="custom-control-input"
-                    id=" customCheckLogin"
+                    id="customCheckLogin"
                     type="checkbox"
                   />
                   <label
                     className="custom-control-label"
-                    htmlFor=" customCheckLogin"
+                    htmlFor="customCheckLogin"
                   >
                     <span className="text-muted">Remember me</span>
                   </label>
                 </div>
                 <div className="text-center">
-                  <Button className="my-4" color="primary" type="submit" onClick={handleSubmit}>
+                  <Button className="my-4" color="primary" type="submit">
                     Sign in
-                    </Button>
+                  </Button>
                 </div>
               </Form>
-            </CardBody>
-          </Card>
-          <Row className="mt-3">
+              <Row className="mt-3">
             <Col xs="6">
               <a
                 className="text-light"
@@ -194,11 +132,13 @@ import {
               </Link>
             </Col>
           </Row>
+            </CardBody>
+          </Card>
+
         </Col>
-        </Row>
-        </div>
-      </>
-    );
-  };
-  
-  export default Login;
+      </Row>
+    </div>
+  );
+};
+
+export default Login;
